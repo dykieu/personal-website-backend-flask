@@ -47,3 +47,28 @@ class Mongo_DB:
             except Exception as err:
                 print(f'Mongo Error: {err}')
                 return None
+        else:
+            print('Missing collection name or payload')
+            return None
+
+    def delete(self, collection_name, payload):
+        if collection_name and payload:
+            try:
+                find_item = self.db[collection_name].find_one({'test': payload['identifier']})
+                if find_item == None:
+                    raise Exception('Invalid Identifier or No entries found')
+                
+                deletion = self.db[collection_name].delete_one({'test': payload['identifier']})
+
+                if deletion != None:
+                    print(f'Mongo Data Deleted: {deletion}')
+                    return deletion
+                else:
+                    raise Exception('Unable to delete data')
+            except Exception as err:
+                print(f'Mongo Error: {err}')
+                return None
+        else:
+            print('Missing collection name or identifier')
+            return None
+

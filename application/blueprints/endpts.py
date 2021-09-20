@@ -42,7 +42,7 @@ def test_insert():
         if test == None:
             return json.dumps({
                 'payload': 'Error Occured while inserting',
-                'status': 400
+                'status': 404
             })
 
         return json.dumps({
@@ -52,5 +52,31 @@ def test_insert():
     except Exception as err:
         return json.dumps({
             'payload': err,
+            'status': 404
+        })
+
+@endpt.route('/test/delete', methods=['GET', 'POST'])
+def test_delete():
+    try:
+        if mongo.check_connection == False:
+            mongo.make_connection()
+
+        test = mongo.delete('test', {
+            'identifier': 'ex dump'
+        })
+
+        if test == None:
+            return json.dumps({
+                'payload': 'Error Occured while deleting',
+                'status': 404
+            })
+
+        return json.dumps({
+            'payload': 'Successfully deleted entry',
             'status': 200
+        })
+    except Exception as err:
+        return json.dumps({
+            'payload': err,
+            'status': 404
         })
