@@ -9,6 +9,7 @@ from application.middleware.extensions import mongo
 endpt = Blueprint('endpt', __name__)
 
 # Different endpoints
+# /personal_web/api
 @endpt.route('/')
 def home():
     return render_template('index.html')
@@ -58,8 +59,7 @@ def test_insert():
 @endpt.route('/test/delete', methods=['GET', 'POST'])
 def test_delete():
     try:
-        if mongo.check_connection == False:
-            mongo.make_connection()
+        if mongo.check_connection == False: mongo.make_connection()
 
         test = mongo.delete('test', {
             'identifier': 'ex dump'
@@ -73,6 +73,33 @@ def test_delete():
 
         return json.dumps({
             'payload': 'Successfully deleted entry',
+            'status': 200
+        })
+    except Exception as err:
+        return json.dumps({
+            'payload': err,
+            'status': 404
+        })
+
+@endpt.route('/test/update', methods=['GET', 'POST'])
+def test_update():
+    try:
+        if mongo.check_connection == False: mongo.make_connection()
+        payload = {
+            'identifier': '6148dacf7c3336c36a60bbba',
+            'updated_vals': {
+                'test' : 'pong'
+                }
+        }
+
+        # _id, new values
+        test = mongo.update('test', payload)
+
+        '''
+        if test == None: raise Exception('Unable to update data')'''
+
+        return json.dumps({
+            'payload': 'Sucessfully updated entry',
             'status': 200
         })
     except Exception as err:

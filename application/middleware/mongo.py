@@ -1,5 +1,6 @@
 from typing import Collection
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import certifi
 
 class Mongo_DB:
@@ -70,5 +71,29 @@ class Mongo_DB:
                 return None
         else:
             print('Missing collection name or identifier')
+            return None
+
+    def update(self, collection_name, payload):
+        if collection_name and payload:
+            try:
+                find_item = self.db[collection_name].find_one({'_id': ObjectId(payload['identifier'])})
+                if find_item == None: raise Exception('Invalid Identified or No entries found')
+                print(payload)
+                print(find_item)
+                updated = self.db[collection_name].update_one(
+                    {'_id': ObjectId(payload['identifier'])},
+                    {'$set': payload['updated_vals']})
+                
+                if updated != None:
+                    print(f'Mongo Data updated: {updated}')
+                    return None
+                else: raise Exception('Unable to update data')
+
+            except Exception as err:
+                print(err)
+                print('Mongo Error: {err}')
+                return None
+        else:
+            print('Missing collection name or identified')
             return None
 

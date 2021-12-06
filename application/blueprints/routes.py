@@ -9,10 +9,3 @@ route = Blueprint('route', __name__, template_folder='templates')
 @route.route('/')
 def home():
     return render_template('index.html')
-
-@route.route('/test')
-def test():
-    try:
-        return 'yea'
-    except:
-        return 'yikes'
